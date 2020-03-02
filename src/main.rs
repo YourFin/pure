@@ -1,5 +1,3 @@
-use termcolor::{Color, ColorChoice, Color, ColorSpec, WriteColor};
-
 // General approach:
 // Daemon, clients communicate via named pipe keyed to process
 //  - Single daemon per user
@@ -28,6 +26,8 @@ use termcolor::{Color, ColorChoice, Color, ColorSpec, WriteColor};
 //  Implementaiton notes:
 //   - Available hooks from zsh:
 //     http://zsh.sourceforge.net/Doc/Release/Functions.html#Hook-Functions
+//     Bash hook hack:
+//     https://superuser.com/questions/175799/does-bash-have-a-hook-that-is-run-before-executing-a-command
 
 fn main() {
     println!("Hello, world!");
