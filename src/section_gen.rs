@@ -1,4 +1,4 @@
-type Utility = i32;
+pub type Utility = i32;
 use std::io;
 use std::io::Write;
 use termcolor::WriteColor;
@@ -7,7 +7,7 @@ pub trait PromptSectionGenerator {
     // Potentially relevent: https://www.mit.edu/~modiano/papers/C67.pdf
     fn utility_for_chars(&self, amount: i32) -> Utility;
     fn bg_color(&self) -> termcolor::Color;
-    fn write_section(&self, buffer: &mut termcolor::Buffer) -> Result<(), io::Error>;
+    fn write_section(&self, length: i32, buffer: &mut termcolor::Buffer) -> Result<(), io::Error>;
 }
 
 // Takes list of prompt section generators an their precedence, with smaller
@@ -35,13 +35,28 @@ pub fn generate_prompt(
     assert!(prompt_sections.len() >= 1);
     for idx in 0..prompt_sections.len() {
         if idx != 0 {
+            // Print out seperator
             let mut sep_color = termcolor::ColorSpec::new();
             sep_color.set_fg(Some((prompt_sections[idx - 1].1).bg_color()));
             sep_color.set_bg(Some((prompt_sections[idx].1).bg_color()));
             buffer.set_color(&sep_color)?;
             write!(&mut buffer, "{}", seperator)?;
         }
+        let mut space_color = termcolor::ColorSpec::new();
+        space_color.set_bg(Some((prompt_sections[idx].1).bg_color()));
+
+        // Write colored space
+        buffer.set_color(&space_color)?;
+        write!(&mut buffer, " ")?;
+
+        // Write prompt section
+        (prompt_sections[idx].1).write_section(0, &mut buffer)?;
+
+        // Write colored space
+        buffer.set_color(&space_color)?;
+        write!(&mut buffer, " ")?;
     }
+    buffer.set_color(&termcolor::ColorSpec::default())?;
 
     return Ok((buffer, bufwtr));
 }

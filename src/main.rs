@@ -29,6 +29,25 @@
 //     Bash hook hack:
 //     https://superuser.com/questions/175799/does-bash-have-a-hook-that-is-run-before-executing-a-command
 
-fn main() {
-    println!("Hello, world!");
+mod section_gen;
+use section_gen::PromptSectionGenerator;
+mod sections;
+
+fn main() -> Result<(), std::io::Error> {
+    use termcolor::Color;
+    let first = sections::simple::Section::from_text(Color::Cyan, "Hello, Prompt");
+    let second = sections::simple::Section::from_text(Color::Green, "Section 2");
+    let third = sections::simple::Section::from_text(Color::Red, "Section 3");
+    let (buffer, bufwtr) = section_gen::generate_prompt(
+        "",
+        &(vec![
+            (0, &first as &dyn PromptSectionGenerator),
+            (0, &second),
+            (0, &third),
+        ])[..],
+        0,
+    )?;
+    bufwtr.print(&buffer)?;
+
+    Ok(())
 }
