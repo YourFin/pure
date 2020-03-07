@@ -35,11 +35,12 @@ mod sections;
 
 fn main() -> Result<(), std::io::Error> {
     use termcolor::Color;
-    let first = sections::simple::Section::from_text(Color::Cyan, "Hello, Prompt");
+    let first = sections::pwd::Pwd::from_pwd();
     let second = sections::simple::Section::from_text(Color::Green, "Section 2");
     let third = sections::simple::Section::from_text(Color::Red, "Section 3");
     let (buffer, bufwtr) = section_gen::generate_prompt(
         "",
+        //"",
         &(vec![
             (0, &first as &dyn PromptSectionGenerator),
             (0, &second),
